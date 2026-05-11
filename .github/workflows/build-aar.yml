@@ -31,4 +31,9 @@ jobs:
         with:
           name: snowflake-aar
           path: snowflake.aar
-      
+      - name: Upload AAR artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: snowflake-aar
+          path: snowflake.aar
+
