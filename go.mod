@@ -1,6 +1,5 @@
 module snowflakeandroid
 
-<<<<<<< HEAD
 go 1.26.2
 
 require gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/snowflake/v2 v2.13.1
@@ -65,7 +64,6 @@ require (
 	golang.org/x/time v0.10.0 // indirect
 	golang.org/x/tools v0.35.0 // indirect
 )
-=======
 go 1.21
 
->>>>>>> 22e665726fe7373d35e8003430be93551ffcaae1
+ 22e665726fe7373d35e8003430be93551ffcaae1
