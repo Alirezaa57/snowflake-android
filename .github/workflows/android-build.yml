@@ -1,0 +1,29 @@
+name: Android Build
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Show files
+        run: ls -la
+
+      - name: Download Go modules
+        run: go mod tidy
+
+      - name: Build Go
+        run: GOOS=linux GOARCH=amd64 go build -v
+
