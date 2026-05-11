@@ -1,5 +1,6 @@
 
-package snowflakeandroid
+package snowflake
+
 
 import (
     "context"
