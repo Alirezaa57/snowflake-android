@@ -22,25 +22,17 @@ jobs:
           go install golang.org/x/mobile/cmd/gobind@latest
           gomobile init
 
-      - name: Build AARrun: |
+      - name: Build AAR
+        run: |
           set -x
-
           pwd
-
           ls -R .
-
           which gomobile
-
           gomobile version
+          gomobile bind -target=android -o snowflake.aar .
 
-          gomobile bind -target=android -o snowflake.aar .Buill- name: Upload AAR artifact
-          uses: actions/upload-artifact@v4
-        with:
-          name: snowflake-aar
-          path: snowflake.aar
       - name: Upload AAR artifact
         uses: actions/upload-artifact@v4
         with:
           name: snowflake-aar
           path: snowflake.aar
-
