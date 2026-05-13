@@ -8,23 +8,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
           go-version: "1.22"
 
-      - name: Install gomobile
+      - name: Install gomobile (stable)
         run: |
-          go install golang.org/x/mobile/cmd/gomobile@latest
-          go install golang.org/x/mobile/cmd/gobind@latest
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20240529-e693b95f9473
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20240529-e693b95f9473
           gomobile init
-          
+
       - name: Build AAR
         run: |
-          set -x
           gomobile bind -androidapi=21 -target=android -o snowflake.aar .
 
       - name: Upload AAR artifact
