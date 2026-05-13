@@ -25,10 +25,6 @@ jobs:
       - name: Build AAR
         run: |
           set -x
-          pwd
-          ls -R .
-          which gomobile
-          gomobile version
           gomobile bind -androidapi=21 -target=android -o snowflake.aar .
 
       - name: Upload AAR artifact
