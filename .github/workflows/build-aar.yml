@@ -14,15 +14,22 @@ jobs:
         with:
           go-version: "1.22"
 
+      - name: Setup Android NDK
+        uses: nttld/setup-ndk@v1
+        with:
+          ndk-version: r26d
+
       - name: Install gomobile
         run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
           go install golang.org/x/mobile/cmd/gomobile@latest
           go install golang.org/x/mobile/cmd/gobind@latest
 
       - name: Initialize gomobile
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
-          gomobile init
+          export ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
+          gomobile init -ndk $ANDROID_NDK_HOME
 
       - name: Build AAR
         run: |
