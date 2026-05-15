@@ -24,7 +24,8 @@ jobs:
 
       - name: Build AAR
         run: |
-          gomobile bind -androidapi=21 -target=android -o snowflake.aar .
+         gomobile bind -androidapi=21 -target=android -o snowflake.aar .
+         -o snowflake.aar .
 
       - name: Upload AAR artifact
         uses: actions/upload-artifact@v4
