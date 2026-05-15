@@ -1,0 +1,53 @@
+name: Build Android AAR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install gomobile
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          go install golang.org/x/mobile/cmd/gobind@latest
+
+          gomobile init
+
+      - name: Build AAR
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+
+          gomobile bind \
+            -androidapi=21 \
+            -target=android \
+            -o snowflake.aar .
+
+      - name: Upload AAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: snowflake-aar
+          path: snowflake.aar
