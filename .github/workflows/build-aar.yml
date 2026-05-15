@@ -1,7 +1,7 @@
-name: Build Snowflake Android AAR
+name: Android Build
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   build:
@@ -12,32 +12,20 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
-
-      - name: Setup Android NDK
-        uses: nttld/setup-ndk@v1
-        with:
-          ndk-version: r26d
+          go-version: '1.23'
 
       - name: Install gomobile
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
+
           go install golang.org/x/mobile/cmd/gomobile@latest
           go install golang.org/x/mobile/cmd/gobind@latest
 
-      - name: Initialize gomobile
-        run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
-          export ANDROID_NDK_HOME=$ANDROID_NDK_ROOT
-          gomobile init -ndk $ANDROID_NDK_HOME
+          go get golang.org/x/mobile/bind
+
+          gomobile init
 
       - name: Build AAR
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
           gomobile bind -androidapi=21 -target=android -o snowflake.aar .
-
-      - name: Upload AAR artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: snowflake-aar
-          path: snowflake.aar
