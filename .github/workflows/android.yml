@@ -11,35 +11,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
-          go-version: '1.23'
+          go-version: '1.22.5'
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v3
 
       - name: Install gomobile
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
 
-          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20240520174638-fa72addaaa1b
-          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20240520174638-fa72addaaa1b
+          mkdir -p $HOME/work
+          cd $HOME/work
 
-          go get golang.org/x/mobile@v0.0.0-20240520174638-fa72addaaa1b
+          go mod init temp
 
-          go get golang.org/x/mobile/bind
+          go get golang.org/x/mobile@v0.0.0-20240104190950-8578da9835fd
 
-          go mod tidy
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20240104190950-8578da9835fd
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20240104190950-8578da9835fd
 
           gomobile init
 
@@ -52,8 +49,7 @@ jobs:
             -target=android \
             -o snowflake.aar .
 
-      - name: Upload AAR
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: snowflake-aar
           path: snowflake.aar
