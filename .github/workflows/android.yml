@@ -1,57 +1,49 @@
-name: Android AAR
+name: Build Android AAR
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main # نام برنچ اصلی خود را اینجا بررسی کنید (ممکن است master باشد)
+  workflow_dispatch: # این امکان را می‌دهد که اکشن را به صورت دستی هم اجرا کنید
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      GO111MODULE: on
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: '1.22' # می‌توانید نسخه Go مورد نیاز خود را تغییر دهید
 
-      - name: Set up Java
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '17' # جاوا برای ساخت فایل‌های اندرویدی الزامی است
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
-      # مرحله ۱: فقط نصب و راه‌اندازی gomobile
       - name: Install gomobile
         run: |
-          export PATH=$PATH:$(go env GOPATH)/bin
           go install golang.org/x/mobile/cmd/gomobile@latest
           go install golang.org/x/mobile/cmd/gobind@latest
+          export PATH=$PATH:$(go env GOPATH)/bin
           gomobile init
 
-      # مرحله ۲: آماده‌سازی وابستگی‌ها و ساخت فایل AAR
       - name: Build AAR
         run: |
           export PATH=$PATH:$(go env GOPATH)/bin
           
-          # اضافه کردن وابستگی مورد نیاز که قبلا صحبت کردیم
+          # اضافه کردن وابستگی‌ها
           go get -tool golang.org/x/mobile/cmd/gobind
           go mod tidy
           
-          # اجرای دستور ساخت
-          gomobile bind \
-            -target=android \
-            -androidapi=21 \
-            -o snowflake.aar .
+          # ساخت فایل AAR
+          gomobile bind -target=android -androidapi=21 -o snowflake.aar .
 
-      - name: Upload AAR
+      - name: Upload AAR Artifact
         uses: actions/upload-artifact@v4
         with:
           name: snowflake-aar
